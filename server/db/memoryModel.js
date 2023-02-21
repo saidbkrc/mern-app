@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const memorySchema = mongoose.Scheme({
+const memorySchema = mongoose.Schema({
     title: {
         type: String,
         required: true,
