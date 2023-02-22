@@ -42,19 +42,54 @@ router.post('/', async (req, res) => {
 
         res.status(201).json(createdMemory);
     } catch (error) {
-        console.log(error.message);
-        res.json({ message: 'create memory failed' });
+        res.json({ message: 'Create memory failed' });
     }
 });
 
 //Update a memory
 router.put('/:id', async (req, res) => {
-    res.json({ message: 'update a memory' });
+    try {
+        const { id } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(id))
+            res.status(404).json({ message: 'Memory id is not valid' });
+
+        const { title, content, creator, image } = req.body;
+
+        const updatedMemory = await Memory.findByIdAndUpdate(
+            id,
+            {
+                title,
+                content,
+                creator,
+                image,
+                _id: id,
+            },
+            { new: true }
+        );
+
+        res.status(200).json(updatedMemory);
+    } catch (error) {
+        console.log(error.message);
+        res.json({ message: 'Update memory failed' });
+    }
 });
 
 //Delete a memory
 router.delete('/:id', async (req, res) => {
-    res.json({ message: 'delete a memory' });
+    try {
+        const { id } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(id))
+            res.status(404).json({ message: 'Memory id is not valid' });
+
+        await Memory.findByIdAndDelete(id);
+
+        res.status(200).json({ message: 'Memory has been deleted' });
+    } catch (error) {
+        console.log(error.message);
+        res.json({ message: 'Delete memory failed' });
+    }
 });
 
 export default router;
